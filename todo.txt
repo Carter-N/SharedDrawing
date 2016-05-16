@@ -1,0 +1,13 @@
+FEATURES TO IMPLEMENT
+-Save and load boards by ID
+-Pan around boards
+-UI Layer canvas
+-Build tool
+-Image upload tool
+-Text tool
+-Touch support
+
+BUGS TO FIX
+-Colors dont match up on shared boards
+-Shape tools dont work until user draws with pen
+-Boards arent synchronized on join

@@ -1,0 +1,80 @@
+<html>
+	<head>
+		<title>SWW</title>
+
+		<!--Meta boilerplate-->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<!--Bootstrap CSS-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+
+		<!--CSS-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+		<link rel="stylesheet" href="style.css">
+
+		<!--Boilerplate JS-->
+		<script data-main="app/app.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
+	</head>
+	<body>
+
+		<!--Board canvas-->
+		<canvas style="position: absolute; z-index: 1000;" id="board"></canvas>
+
+		<!--Menu-->
+		<div style="position: absolute; z-index: 1001;">
+
+			<!--Color tool-->
+			<div class="menu" id="color">
+				<input type="text" id="picker"/>
+			</div>
+
+			<!--Pen tool-->
+			<div class="menu" id="pen">
+				<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+			</div>
+
+			<!--Circle tool-->
+			<div class="menu" id="circle">
+				Circle
+			</div>
+
+			<!--Rectangle tool-->
+			<div class="menu" id="rectangle">
+				Rectangle
+			</div>
+
+			<!--Line tool-->
+			<div class="menu" id="line">
+				<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+			</div>
+
+			<!--Eraser tool-->
+			<div class="menu" id="eraser">
+				<span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+			</div>
+
+			<!--Collaboration tool-->
+			<div class="menu" id="collaborate">
+				<span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>
+			</div>
+		</div>
+
+		<!--Collaboration menu-->
+		<div id="collaborate-menu">
+			<center>
+				<button id="close">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				</button><br>
+				<input type="text" name="id" id="room-id"></input><br>
+				<button id="join">Join</button><br>
+				<h3>
+					Your current board ID: <br>
+					<strong>
+						<span id="board-id"></span>
+					</strong>
+				</h3>
+			</center>
+		</div>
+	</body>
+</html>
