@@ -56,3 +56,31 @@
 	right: 0px;
 	top: 0px;
 }
+
+#user-menu{
+    z-index: 1004;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 300px;
+    height: 400px;
+    background-color: #d3d3d3;
+    padding: 20px;
+}
+
+#user-menu #perm{
+    right: 0px;
+}
+
+.user{
+    border-bottom-style: solid;
+    border-width: 1px;
+}
+
+.granted{
+    background-color: limegreen;
+}
+
+.denied{
+    background-color: orangered;
+}

@@ -19,7 +19,8 @@
 	<body>
 
 		<!--Board canvas-->
-		<canvas style="position: absolute; z-index: 1000;" id="board"></canvas>
+		<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; z-index: 1000;" id="board">
+		</svg>
 
 		<!--Menu-->
 		<div style="position: absolute; z-index: 1001;">
@@ -65,16 +66,36 @@
 			<center>
 				<button id="close">
 					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-				</button><br>
-				<input type="text" name="id" id="room-id"></input><br>
+				</button>
+                
+                <div class="form-group">
+                    <label for="room-id">Room ID</label>
+                    <input type="text" class="form-control" name="room-id" id="room-id"></input>
+                </div>
+            
+				<div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" id="name"></input>
+                </div>
+        
 				<button id="join">Join</button><br>
+        
 				<h3>
-					Your current board ID: <br>
+					Your current board:<br>
 					<strong>
 						<span id="board-id"></span>
 					</strong>
 				</h3>
 			</center>
 		</div>
+
+        <!--User menu-->
+        <div id="user-menu">
+            <h3>Users</h3>
+            
+            <div id="users">
+                
+            </div>
+        </div>
 	</body>
 </html>

@@ -1,13 +1,12 @@
 FEATURES TO IMPLEMENT
--Save and load boards by ID
+-Save and load boards by ID (Firebase?)
 -Pan around boards
--UI Layer canvas
--Build tool
--Image upload tool
--Text tool
--Touch support
+-UI Layer canvas and module with functions
+-Build tool with brunch/grunt
+-Image upload tool (svg?)
+-Text tool (Maybe not tho)
+-Permissions menu
+-Shorter IDs
 
 BUGS TO FIX
--Colors dont match up on shared boards
--Shape tools dont work until user draws with pen
--Boards arent synchronized on join
+-Menu scrolling for mobile

@@ -1,64 +1,58 @@
-define("brush", ["jquery", "spectrum"], function($){
+define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 
-	var canvas = null;
-	var context = null;
+	var paper = null;
+	var color = null;
 
 	//Initialize the brush
-	var init = function(_canvas, _context){
-		canvas = _canvas;
-		context = _context;
+	var init = function(_paper){
+		paper = _paper;
 	};
 
-	//Clear a board
-	var clearBoard = function(){
-		context.fillStyle = "rgb(0, 0, 0)";
-		context.fillRect(0, 0, canvas.width, canvas.height);
+	//Get and set color of brush
+	var setColor = function(_color){
+		color = _color;
 	};
 
-	//Erase a section of the board
-	var erase = function(x, y, r){
-		context.strokeStyle = "rgb(0, 0, 0)";
-		context.fillStyle = "rgb(0, 0, 0)";
-		context.beginPath();
-		context.arc(x, y, r, 0, 2 * Math.PI, false);
-		context.fill();
-		context.stroke();
+	var getColor = function(){
+		var picker = $("#picker").spectrum("get");
+		return picker.toRgbString();
 	};
 
 	//Draw a rectangle on the board
 	var rectangle = function(x, y, width, height){
-		var t = $("#picker").spectrum("get");
-		context.fillStyle = t.toRgbString();
-		context.strokeRect(x, y, width, height);
+		var rectangle = paper.rect(x, y, width, height);
+		rectangle.attr({
+			strokeWidth: 2,
+			stroke: color
+		});
 	};
 
 	//Draw a circle on the board
 	var circle = function(x, y, r){
 		var t = $("#picker").spectrum("get");
-		context.fillStyle = t.toRgbString();
-		context.beginPath();
-		context.lineWidth = 2;
-		context.arc(x, y, r, 0, 2 * Math.PI, false);
-		context.stroke();
+		var circle = paper.circle(x, y, r);
+		circle.attr({
+			strokeWidth: 2,
+			stroke: t.toRgbString()
+		});
 	};
 
 	//Draw a line
 	var line = function(x0, y0, x1, y1){
-		var t = $("#picker").spectrum("get");
-		context.strokeStyle = t.toRgbString();
-		context.lineWidth = 2;
-		context.beginPath();
-		context.quadraticCurveTo(x0, y0, x1, y1);
-		context.stroke();
+		var line = paper.line(x0, y0, x1, y1);
+		line.attr({
+			strokeWidth: 2,
+			stroke: color
+		});
 	};
 
 	return{
-		clearBoard: clearBoard,
 		rectangle: rectangle,
 		init: init,
 		color: color,
+		setColor: setColor,
+		getColor: getColor,
 		line: line,
-		erase: erase,
 		circle: circle
 	}
 });
