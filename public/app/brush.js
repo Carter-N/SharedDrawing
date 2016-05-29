@@ -54,5 +54,5 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 		getColor: getColor,
 		line: line,
 		circle: circle
-	}
+	};
 });

@@ -69,7 +69,7 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 
 		mouse.pressed = false;
 		trackMouse(event);
-    }
+    };
     
     var onMove = function(event){
         trackMouse(event);
@@ -125,7 +125,7 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 
 	$(board).on("touchmove", function(event){
         
-        if(event.target.id = "board"){
+        if(event.target.id === "board"){
 			event.preventDefault();
 		}
         

@@ -1,17 +1,28 @@
 {
-  "name": "sww",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.13.4",
-    "node-uuid": "^1.4.7",
-    "shortid": "^2.2.6",
-    "socket.io": "^1.4.6"
-  }
+    "name": "sww",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    
+    "dependencies": {
+        "express": "^4.13.4",
+        "node-uuid": "^1.4.7",
+        "shortid": "^2.2.6",
+        "socket.io": "^1.4.6"
+    },
+    
+    "devDependencies": {
+        "grunt": "~0.4.4",
+        "grunt-contrib-jshint": "latest",
+        "jshint-stylish": "latest",
+        "grunt-contrib-uglify": "latest",
+        "grunt-contrib-cssmin": "latest",
+        "grunt-contrib-htmlmin": "latest"
+    }
 }

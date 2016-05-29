@@ -62,7 +62,7 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
         
         console.log(data);
         
-        for(user in data){ 
+        for(var user in data){ 
             console.log(user);
             
             if(data[user].p){
@@ -136,19 +136,19 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
     var handleAction = function(data){
         
         //Line drawn
-		if(data.action == 0){
+		if(data.action === 0){
 			brush.setColor(data.color);
 			brush.line(data.x1, data.y1, data.x2, data.y2);
 		}
         
         //Circle drawn
-        if(data.action == 1){
+        if(data.action === 1){
 			brush.setColor(data.color);
 			brush.circle(data.x, data.y, data.r);
 		}
         
         //Rectangle drawn
-        if(data.action == 2){
+        if(data.action === 2){
 			brush.setColor(data.color);
 			brush.rectangle(data.x, data.y, data.w, data.h);
 		}

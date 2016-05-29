@@ -4,7 +4,7 @@ define("menu", ["jquery", "colorPicker"], function($, colorPicker){
 
 	var tool = {
 		selected: "pen"
-	}
+	};
 
 	//Menu object
 	var menu = [
