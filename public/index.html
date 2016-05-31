@@ -19,7 +19,7 @@
 	<body>
 
 		<!--Board canvas-->
-		<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; z-index: 1000;" id="board"></svg>
+		<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; z-index: 1000;" transform="matrix(1 0 0 1 0 0)" id="board"></svg>
         
         <!--UI canvas-->
 
@@ -38,22 +38,27 @@
 
 			<!--Circle tool-->
 			<div class="menu" id="circle">
-				Circle
+				<span class="glyphicon glyphicon-record" aria-hidden="true"></span>
 			</div>
 
 			<!--Rectangle tool-->
 			<div class="menu" id="rectangle">
-				Rectangle
+				<span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
 			</div>
 
 			<!--Line tool-->
 			<div class="menu" id="line">
 				<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 			</div>
+            
+            <!--Pan tool-->
+			<div class="menu" id="pan">
+				<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+			</div>
 
-			<!--Eraser tool-->
-			<div class="menu" id="eraser">
-				<span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+			<!--Save tool-->
+			<div class="menu" id="save">
+				<span class="glyphicon glyphicon-save" aria-hidden="true"></span>
 			</div>
 
 			<!--Collaboration tool-->
@@ -65,7 +70,7 @@
 		<!--Collaboration menu-->
 		<div id="collaborate-menu">
 			<center>
-				<button id="close">
+				<button class="btn btn-default" id="close">
 					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 				</button>
                 
@@ -79,7 +84,7 @@
                     <input type="text" class="form-control" name="name" id="name"></input>
                 </div>
         
-				<button id="join">Join</button><br>
+				<button class="btn btn-default" id="join">Join</button><br>
         
 				<h3>
 					Your current board:<br>

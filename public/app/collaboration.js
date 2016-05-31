@@ -1,56 +1,102 @@
+/**
+* Module contains function involving client to client communication.
+*/
 define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
 
-	//Connect web socket server
-	var socket = io();
+	//Socket server instace
+	/** @private */ var socket = io();
     
-    //Current board
-	var board;
+    //Refrence to server board
+	/** @private */ var board;
     
-    //Current client info
-    var client;
+    //Current client information
+    /** @private */ var client;
 
 	//Collaboration menu
-	var button = $("#collaborate");
-	var menu = $("#collaborate-menu");
-	var join = $("#join");
-	var id = $("#room-id");
-    var name = $("#name");
-	var close = $("#close");
-    var users = $("#users");
+	/** @private */ var button = $("#collaborate");
+	/** @private */ var menu = $("#collaborate-menu");
+	/** @private */ var join = $("#join");
+	/** @private */ var id = $("#room-id");
+    /** @private */ var name = $("#name");
+	/** @private */ var close = $("#close");
+    
+    //Users panel
+    /** @private */ var users = $("#users");
+    
+    //Save
+    /** @private */ var saveButton = $("#save");
 	
-	//Initially hide menu
+	//Hide collaboration menu
 	$(menu).hide();
 
-	//Menu events
+    //Save a board
+    $()
+    
+	//Show menu
 	$(button).on("click", function(event){
 		$(menu).show();
 	});
-
+    
+    //Hide menu
+    $(close).on("click", function(){
+		$(menu).hide();
+	});
+    
+    //Attempt to join a room
 	$(join).on("click", function(event){
+        
+        //Emit join event
 		socket.emit("join-room", {
             id: id.val(),
             name: name.val()
         });
+        
+        //Clear input
+        id.val("");
+        name.val("");
+        
+        //Hide menu
 		$(menu).hide();
 	});
 
-	$(close).on("click", function(){
-		$(menu).hide();
-	});
-
-	//Socket outbound communications
+	/**
+    * Client line drawn event callback.
+    *
+    * @param {Number} x1 The x coordinate of the first point of the line.
+    * @param {Number} y1 The y coordinate of the first point of the line.
+    * @param {Number} x2 The x coordinate of the second point of the line.
+    * @param {Number} y2 The y coordinate of the second point of the line.
+    * @param {String} color The color of the line.
+    */
 	var line = function(x1, y1, x2, y2, color){
 		socket.emit("action", {
 			action: 0, x1: x1, y1: y1, x2: x2, y2: y2, color: color
 		});
 	};
     
+    /**
+    * Client circle drawn event callback.
+    *
+    * @param {Number} x The x coordinate of the circle.
+    * @param {Number} y The y coordinate of the circle.
+    * @param {Number} r The radius of the circle.
+    * @param {String} color The color of the circle.
+    */
     var circle = function(x, y, r, color){
 		socket.emit("action", {
 			action: 1, x: x, y: y, r: r, color: color
 		});
 	};
     
+    /**
+    * Client line drawn event callback.
+    *
+    * @param {Number} x1 The x coordinate of the first point of the line.
+    * @param {Number} y1 The y coordinate of the first point of the line.
+    * @param {Number} x2 The x coordinate of the second point of the line.
+    * @param {Number} y2 The y coordinate of the second point of the line.
+    * @param {String} color The color of the line.
+    */
     var rectangle = function(x, y, w, h, color){
 		socket.emit("action", {
 			action: 2, x: x, y: y, w: w, h: h, color: color
@@ -60,21 +106,20 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
     var updateUsers = function(data){
         $(users).empty();
         
-        console.log(data);
-        
         for(var user in data){ 
-            console.log(user);
             
             if(data[user].p){
-                $(users).append("<div class='user' id=" + user + ">" + data[user].name + "<button class='perm granted' type='button'>p</button></div>");
+                $(users).append("<div class='user'><button id=" + user + " class='btn btn-danger perm' type='button'><span id=" + user + " class='glyphicon glyphicon-remove' aria-hidden='true'></span></button>" + data[user].name + "</div>");
             }else{
-                $(users).append("<div class='user' id=" + user + ">" + data[user].name + "<button class='perm denied' type='button'>p</button></div>");
+                $(users).append("<div class='user'><button id=" + user + " class='btn btn-success perm' type='button'><span id=" + user + " class='glyphicon glyphicon-ok' aria-hidden='true'></span></button>" + data[user].name + "</div>");
             }
         }
         
         $(".perm").on("click", function(event){
             
             var user = event.target.id;
+            
+            console.log(user);
             
             board.clients[user].p = !board.clients[user].p;
             
@@ -87,7 +132,6 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
 	//Socket inbound communications
     socket.on("join-room-sucess", function(data){
         loadBoard(data.board.actions);
-        console.log("Joined board");
         board = data.board;
         updateUsers(board.clients);
     });
@@ -97,7 +141,6 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
     });
     
     socket.on("join-room-failed", function(){
-        console.log("Failed to join board");
     });
     
 	socket.on("id", function(data){
@@ -114,7 +157,6 @@ define("collaboration", ["jquery", "io", "brush"], function($, io, brush){
     });
     
     socket.on("client-left", function(data){
-        console.log("Client left");
         updateUsers(data);
     });
 

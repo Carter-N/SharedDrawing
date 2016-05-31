@@ -1,17 +1,24 @@
+/**
+* Module contains board information and controls board events.
+*/
 define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($, brush, menu, collaboration, snap){
 
 	//Board element
 	var board = $("#board");
-	$(board).width(window.innerWidth);
-	$(board).height(window.innerHeight);
+	
+    //Board drawing context
 	var paper = Snap("#board");
-
-	//Setup menu and brush
+    
+    //Panning parameters
+    /** @private */ var boardX = 0;
+    /** @private */ var boardY = 0;
+    
+	//Initialize menu and brush
 	menu.init();
 	brush.init(paper);
 
-	//Mouse/touch object
-	var mouse = {
+	//Mouse/touch information
+	/** @private */ var mouse = {
 		x: null,
 		y: null,
 		pressed: null,
@@ -19,18 +26,50 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 		lastY: null
 	};
     
-    //Event handlers
+    //User action tracking
+	/** @private */ var actionStart = {x: 0, y: 0};
+    
+    /**
+    * Update information about the mouse/touch.
+    *
+    * @param {Event} event The currently tracked event. 
+    */
+	var trackMouse = function(event){
+		mouse.lastX = mouse.x;
+		mouse.lastY = mouse.y;
+		mouse.x = event.pageX;
+		mouse.y = event.pageY;
+	};
+    
+    /**
+    * Handles a window resize event.
+    */
+    var onResize = function(){
+        $(board).width(window.innerWidth);
+        $(board).height(window.innerHeight);
+    };
+    
+    /**
+    * Handles a touch/mouse down event.
+    *
+    * @param {Event} event The tracked event.
+    */
     var onDown = function(event){
-        
 		actionStart.x = event.pageX;
 		actionStart.y = event.pageY;
 		mouse.pressed = true;
 		trackMouse(event);
     };
     
+    /**
+    * Handles a touch/mouse down event.
+    *
+    * @param {Event} event The tracked event.
+    */
     var onUp = function(event){
         
-        //Handle line and rectangle drawing
+        trackMouse(event);
+        
 		if(menu.tool.selected == "line"){
             
             var x1 = actionStart.x;
@@ -68,10 +107,15 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 		}
 
 		mouse.pressed = false;
-		trackMouse(event);
     };
     
+    /**
+    * Handles a touch/mouse move event.
+    *
+    * @param {Event} event The tracked event.
+    */
     var onMove = function(event){
+        
         trackMouse(event);
 
 		if(mouse.pressed){
@@ -81,48 +125,50 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 				brush.line(mouse.lastX, mouse.lastY, event.pageX, event.pageY);
 				collaboration.line(mouse.lastX, mouse.lastY, event.pageX, event.pageY, brush.getColor());
 			}
+            
+            if(menu.tool.selected === "pan"){
+                //boardX += (mouse.x - mouse.lastX);
+                //boardY += (mouse.y - mouse.lastY);
+                //var element = $("#board");
+                
+                //var raw = $(element).attr("transform");
+                //var transform = /matrix\(\s*([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)/.exec(raw);
+
+                //var x = transform[5];
+                //var y = transform[6];
+
+                //console.log(x, y);
+
+                //$(element).attr("transform", "matrix(1 0 0 1 " + boardX + " " + boardY +")");
+            }
 
 			if(menu.tool.selected === "eraser"){
-				collaboration.socket.emit("erase", {
-					x: mouse.x - 50, y: mouse.y - 50
-				});
-				brush.erase(mouse.x - 50, mouse.y - 50, 100);
+				//collaboration.socket.emit("erase", {
+				//	x: mouse.x - 50, y: mouse.y - 50
+				//});
+				//brush.erase(mouse.x - 50, mouse.y - 50, 100);
 			}
 		}
     };
-
-	//User draw action
-	var actionStart = {x: 0, y: 0};
     
-    //Track mouse/touch
-	var trackMouse = function(event){
-		mouse.lastX = mouse.x;
-		mouse.lastY = mouse.y;
-		mouse.x = event.pageX;
-		mouse.y = event.pageY;
-	};
+    //Window resize event
+    $(window).on("resize", onResize);
     
-    //Start action events
+    //Touch start event
 	$(board).on("touchstart", function(event){
 		event.pageX = event.changedTouches[0].pageX;
 		event.pageY = event.changedTouches[0].pageY;
 		onDown(event);
 	});
     
-    $(board).on("mousedown", function(event){
-        onDown(event);
-	});
-    
-    $(board).on("mouseup", function(event){
-        onUp(event);
-	});
-
-	$(board).on("touchend", function(event){
+    //Touch end event
+    $(board).on("touchend", function(event){
 		event.pageX = event.changedTouches[0].pageX;
 		event.pageY = event.changedTouches[0].pageY;
 		onUp(event);
 	});
-
+    
+    //Touch move event
 	$(board).on("touchmove", function(event){
         
         if(event.target.id === "board"){
@@ -133,13 +179,22 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 		event.pageY = event.changedTouches[0].pageY;
 		onMove(event);
 	});
-
-	$(board).on("mousemove", function(event){
-		onMove(event);
-	});
+    
+    //Mouse start event
+    $(board).on("mousedown", onDown);
+    
+    //Mouse up event
+    $(board).on("mouseup", onUp);
+    
+    //Mouse move event
+	$(board).on("mousemove", onMove);
+    
+    //Fit the board to window
+    onResize();
 
 	return {
 		board: board,
-		mouse: mouse
+		mouse: mouse,
+        paper: paper
 	};
 });

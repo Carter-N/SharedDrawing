@@ -21,8 +21,11 @@ define("menu", ["jquery", "colorPicker"], function($, colorPicker){
 		//Circle
 		{id: "line"},
 
-		//Eraser
-		{id: "eraser"},
+		//Save
+		{id: "save"},
+        
+        //Pan tool
+        {id: "pan"},
 
 		//Collaboration tool
 		{id: "collaboration"}
@@ -39,6 +42,7 @@ define("menu", ["jquery", "colorPicker"], function($, colorPicker){
 			var button = menu[i];
 
 			$("#" + button.id).click($.proxy(setSelectedTool, tool));
+            //$("#" + button.id).tooltip(button.id);
 		}
 	};
 
