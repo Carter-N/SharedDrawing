@@ -8,6 +8,9 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
     
     //Current color of the brush
 	/** @private */ var color = null;
+    
+    //Nested group
+    var g = null;
 
 	/**
     * Initializes the brush with the SVG drawing context.
@@ -16,7 +19,19 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
     */
 	var init = function(_paper){
 		paper = _paper;
+        g = paper.g();
+        console.log(g)
 	};
+    
+    var translate = function(x, y){
+        var t = "t" + x + "," + y;
+        g.transform(t);
+    };
+    
+    var scale = function(x, y){
+        var t = "s" + x + "," + y;
+        g.transform(t);
+    };
 
 	/**
     * Set the current color of the brush.
@@ -47,8 +62,10 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 		var rectangle = paper.rect(x, y, width, height); 
 		rectangle.attr({
 			strokeWidth: 2,
-			stroke: color
+			stroke: color,
+            fill: "none"
 		});
+        g.add(rectangle);
 	};
 
 	/**
@@ -63,8 +80,10 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 		var circle = paper.circle(x, y, r);
 		circle.attr({
 			strokeWidth: 2,
-			stroke: t.toRgbString()
+			stroke: t.toRgbString(),
+            fill: "none"
 		});
+        g.add(circle);
 	};
 
 	/**
@@ -81,6 +100,7 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 			strokeWidth: 2,
 			stroke: color
 		});
+        g.add(line);
 	};
 
 	return { 
@@ -89,6 +109,8 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 		getColor: getColor,
         rectangle: rectangle,
 		circle: circle,
-        line: line
+        line: line,
+        translate: translate,
+        scale: scale
 	};
 });

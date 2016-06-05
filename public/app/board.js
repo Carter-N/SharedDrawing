@@ -13,6 +13,9 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
     /** @private */ var boardX = 0;
     /** @private */ var boardY = 0;
     
+    //Zooming parameters
+    /** @private */ var zoom = 1;
+    
 	//Initialize menu and brush
 	menu.init();
 	brush.init(paper);
@@ -78,8 +81,8 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
             var y2 = event.pageY;
             
 			brush.setColor(brush.getColor());
-			brush.line(x1, y1, x2, y2);
-			collaboration.line(x1, y1, x2, y2, brush.getColor());
+			brush.line(x1 - boardX, y1 - boardY, x2 - boardX, y2 - boardY);
+			collaboration.line(x1 - boardX, y1 - boardY, x2 - boardX, y2 - boardY, brush.getColor());
 		}
 
 		if(menu.tool.selected == "circle"){
@@ -89,24 +92,52 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
             var r = Math.sqrt(Math.pow(event.pageX - x, 2) + Math.pow(event.pageY - y, 2));
             
             brush.setColor(brush.getColor());
-			brush.circle(x, y, r);
+			brush.circle(x - boardX, y - boardY, r);
 
-			collaboration.circle(x, y, r, brush.getColor());
+			collaboration.circle(x - boardX, y - boardY, r, brush.getColor());
 		}
 
 		if(menu.tool.selected == "rectangle"){
             
             var x = actionStart.x;
             var y = actionStart.y;
-            var w = Math.abs(event.pageX - actionStart.x);
-            var h = Math.abs(event.pageY - actionStart.y);
+            var w = event.pageX - actionStart.x;
+            var h = event.pageY - actionStart.y;
             
             brush.setColor(brush.getColor());
-			brush.rectangle(x, y, w, h);
-			collaboration.rectangle(x, y, w, h, brush.getColor());
+            
+            if(w < 0){
+                x = event.pageX;
+                w = Math.abs(w);
+            }
+            
+            if(h < 0){
+                y = event.pageY;
+                h = Math.abs(h);
+            }
+            
+            brush.rectangle(x - boardX, y - boardY, w, h);
+            collaboration.rectangle(x - boardX, y - boardY, w, h, brush.getColor());
 		}
 
 		mouse.pressed = false;
+    };
+    
+    var onWheel = function(event){
+        
+        if(menu.tool.selected === "pan"){
+            
+            if(event.shiftKey){
+                zoom += 0.1;
+                brush.scale(zoom, zoom);
+            }
+            
+            if(!event.shiftKey){
+                zoom -= 0.1;
+                brush.scale(zoom, zoom);
+            }
+            
+        }
     };
     
     /**
@@ -122,24 +153,14 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 
 			if(menu.tool.selected === "pen"){
 				brush.setColor(brush.getColor());
-				brush.line(mouse.lastX, mouse.lastY, event.pageX, event.pageY);
-				collaboration.line(mouse.lastX, mouse.lastY, event.pageX, event.pageY, brush.getColor());
+				brush.line(mouse.lastX - boardX, mouse.lastY - boardY, event.pageX - boardX, event.pageY - boardY);
+				collaboration.line(mouse.lastX - boardX, mouse.lastY - boardY, event.pageX - boardX, event.pageY - boardY, brush.getColor());
 			}
             
             if(menu.tool.selected === "pan"){
-                //boardX += (mouse.x - mouse.lastX);
-                //boardY += (mouse.y - mouse.lastY);
-                //var element = $("#board");
-                
-                //var raw = $(element).attr("transform");
-                //var transform = /matrix\(\s*([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)[ ,]([^\s,)]+)/.exec(raw);
-
-                //var x = transform[5];
-                //var y = transform[6];
-
-                //console.log(x, y);
-
-                //$(element).attr("transform", "matrix(1 0 0 1 " + boardX + " " + boardY +")");
+                boardX += (mouse.x - mouse.lastX);
+                boardY += (mouse.y - mouse.lastY);
+                brush.translate(boardX, boardY);
             }
 
 			if(menu.tool.selected === "eraser"){
@@ -188,6 +209,9 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
     
     //Mouse move event
 	$(board).on("mousemove", onMove);
+    
+    //Mouse wheel event
+    //$("body").on("wheel", onWheel);
     
     //Fit the board to window
     onResize();

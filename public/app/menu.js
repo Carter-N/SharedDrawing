@@ -24,6 +24,21 @@ define("menu", ["jquery", "colorPicker"], function($, colorPicker){
 		//Save
 		{id: "save"},
         
+        //Undo
+        {id: "undo"},
+        
+        //Redo
+        {id: "redo"},
+        
+        //Eraser
+        {id: "eraser"},
+        
+        //Image upload
+        {id: "image"},
+        
+        //Text
+        {id: "text"},
+        
         //Pan tool
         {id: "pan"},
 
