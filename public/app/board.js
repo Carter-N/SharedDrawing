@@ -73,7 +73,11 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
         
         trackMouse(event);
         
-		if(menu.tool.selected == "line"){
+        if(menu.tool.selected === "pen"){
+            brush.addStroke();
+        }
+        
+		if(menu.tool.selected === "line"){
             
             var x1 = actionStart.x;
             var y1 = actionStart.y;
@@ -85,7 +89,7 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 			collaboration.line(x1 - boardX, y1 - boardY, x2 - boardX, y2 - boardY, brush.getColor());
 		}
 
-		if(menu.tool.selected == "circle"){
+		if(menu.tool.selected === "circle"){
             
             var x = actionStart.x;
             var y = actionStart.y;
@@ -97,7 +101,7 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 			collaboration.circle(x - boardX, y - boardY, r, brush.getColor());
 		}
 
-		if(menu.tool.selected == "rectangle"){
+		if(menu.tool.selected === "rectangle"){
             
             var x = actionStart.x;
             var y = actionStart.y;
@@ -136,7 +140,6 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
                 zoom -= 0.1;
                 brush.scale(zoom, zoom);
             }
-            
         }
     };
     
@@ -153,7 +156,7 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 
 			if(menu.tool.selected === "pen"){
 				brush.setColor(brush.getColor());
-				brush.line(mouse.lastX - boardX, mouse.lastY - boardY, event.pageX - boardX, event.pageY - boardY);
+				brush.line(mouse.lastX - boardX, mouse.lastY - boardY, event.pageX - boardX, event.pageY - boardY, true);
 				collaboration.line(mouse.lastX - boardX, mouse.lastY - boardY, event.pageX - boardX, event.pageY - boardY, brush.getColor());
 			}
             
@@ -170,6 +173,27 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
 				//brush.erase(mouse.x - 50, mouse.y - 50, 100);
 			}
 		}
+    };
+    
+    var undo = function(){
+        
+        var undoEl = brush.history[brush.history.length - 1];
+        
+        if(undoEl.stroke){
+            
+            for(var i = 0; i < undoEl.stroke.length; i++){
+                undoEl.stroke[i].remove();
+            }
+            
+        }else{  
+            undoEl.remove();
+        }
+        
+        brush.history.pop();
+    };
+    
+    var redo = function(){
+          
     };
     
     //Window resize event
@@ -209,6 +233,9 @@ define("board", ["jquery", "brush", "menu", "collaboration", "snap"], function($
     
     //Mouse move event
 	$(board).on("mousemove", onMove);
+    
+    //Undo event
+    $("#undo").on("click", undo);
     
     //Mouse wheel event
     //$("body").on("wheel", onWheel);

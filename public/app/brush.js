@@ -9,6 +9,12 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
     //Current color of the brush
 	/** @private */ var color = null;
     
+    //List of recent elements added
+    var history = [];
+    
+    //Current stroke
+    var currentStroke = [];
+    
     //Nested group
     var g = null;
 
@@ -22,6 +28,20 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
         g = paper.g();
         console.log(g)
 	};
+    
+    var addStroke = function(){
+        addToHistory({stroke: true, stroke: currentStroke});
+        currentStroke = [];
+    };
+    
+    var addToHistory = function(el){
+        
+        if(history.length >= 50){
+            history.shift();
+        }
+        
+        history.push(el);
+    };
     
     var translate = function(x, y){
         var t = "t" + x + "," + y;
@@ -66,6 +86,7 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
             fill: "none"
 		});
         g.add(rectangle);
+        addToHistory(rectangle);
 	};
 
 	/**
@@ -84,6 +105,7 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
             fill: "none"
 		});
         g.add(circle);
+        addToHistory(circle);
 	};
 
 	/**
@@ -94,13 +116,19 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
     * @param {Number} y2 The x coordinate of the second point of the line.
     * @param {Number} y2 The y coordinate of the second point of the line.
     */
-	var line = function(x1, y1, x2, y2){
+	var line = function(x1, y1, x2, y2, stroke){
 		var line = paper.line(x1, y1, x2, y2);
 		line.attr({
 			strokeWidth: 2,
 			stroke: color
 		});
         g.add(line);
+        
+        if(stroke){
+            currentStroke.push(line);
+        }else{
+            addToHistory(line);
+        }
 	};
 
 	return { 
@@ -111,6 +139,8 @@ define("brush", ["jquery", "spectrum", "snap"], function($, spectrum, snap){
 		circle: circle,
         line: line,
         translate: translate,
-        scale: scale
+        scale: scale,
+        history: history,
+        addStroke: addStroke
 	};
 });
